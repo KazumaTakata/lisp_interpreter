@@ -3,21 +3,72 @@
 
 
 (defun create-lex-data (input)
-  (list :pos 0
-	:data input))
+  (list :pos -1
+	:data input
+	:cur nil))
 
-(defparameter *input-data* (create-lex-data "(+ 41 13)"))
+(defparameter *input-data* (create-lex-data "(getf   41 13)"))
 
-(defun getCurChar (lex-data)
-  (let ((pos (getf lex-data :pos)))
-    (let ((data (getf lex-data :data)))
-      (char data pos))))
+
+(defun lex-data-length (lex-data)
+  (let ((data (getf lex-data :data)))
+    (length data)))
+
+(defun genToken (lex-data)
+  (let ((curChar (get-cur-char lex-data)))
+    (if curChar
+	(cond
+	 ((char= curChar
+		 #\()
+	  "LPAREN")
+	 ((char= curChar #\)) "RPAREN")
+	 ((char= curChar #\+) "PLUS")
+	 ((char= curChar #\-) "MINUS")
+	 ((alpha-char-p curChar)
+	  (get-ident lex-data))
+	 ((digit-char-p curChar)
+	  (get-number lex-data)))
+      nil)))
+
+(defun get-number (lex-data)
+  (let ((start-pos (getf lex-data :pos)))
+    (progn
+      (loop do
+	    (get-cur-char lex-data)
+	    while
+	    (digit-char-p (getf lex-data :cur)))
+      (let ((end-pos (getf lex-data :pos))
+	    (data (getf lex-data :data)))
+	(subseq data start-pos end-pos)))))
+
+
+(defun get-ident (lex-data)
+  (let ((start-pos (getf lex-data :pos)))
+    (progn
+      (loop do
+	    (get-cur-char lex-data)
+	    while
+	    (alpha-char-p (getf lex-data :cur)))
+      (let ((end-pos (getf lex-data :pos))
+	    (data (getf lex-data :data)))
+	(subseq data start-pos end-pos))))) 
+
+(defun get-cur-char (lex-data)
+  (progn
+    (advanceChar)
+    (let ((pos (getf lex-data :pos)))
+      (if (> (lex-data-length lex-data) pos)
+	  (let ((data (getf lex-data :data)))
+	    (let ((curChar (char data pos)))
+	      (setf (getf *input-data* :cur) curChar)))
+	nil))))
+
 
 (defun advanceChar ()
   (let ((curpos (getf *input-data* :pos)))
-    ((setf (getf *input-data* :pos) curpos))))
+    (setf (getf *input-data* :pos) (+ curpos 1))))
 
-(setf (getf *input-data* :pos) 1)
+
 
 
 (defun isNumber (ch)
@@ -39,5 +90,3 @@
 	(list '1+ var)))
 
 
-
-(inc x)
