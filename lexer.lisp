@@ -7,7 +7,7 @@
 	:data input
 	:cur nil))
 
-(defparameter *input-data* (create-lex-data "(getf   41 13)"))
+(defparameter *input-data* (create-lex-data "(+ 3  (- 3 (+ 1 4) ) )"))
 
 
 (defun lex-data-length (lex-data)
@@ -67,7 +67,8 @@
   (let ((start-pos (getf lex-data :pos)))
     (progn
       (loop do
-	    (advance-get-cur-char lex-data)
+	    (if (digit-char-p (get-next-char lex-data))
+		(advance-get-cur-char lex-data))
 	    while
 	    (digit-char-p (get-next-char lex-data)))
       (let ((end-pos (getf lex-data :pos))
@@ -81,7 +82,8 @@
   (let ((start-pos (getf lex-data :pos)))
     (progn
       (loop do
-	    (advance-get-cur-char lex-data)
+	    (if (alpha-char-p (get-next-char lex-data))
+		(advance-get-cur-char lex-data))
 	    while
 	    (alpha-char-p (get-next-char lex-data)))
       (let ((end-pos (getf lex-data :pos))
