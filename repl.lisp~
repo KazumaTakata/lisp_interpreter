@@ -1,5 +1,0 @@
-
-
-(load (compile-file  "lexer.lisp"))
-(load (compile-file  "parser.lisp"))
-
