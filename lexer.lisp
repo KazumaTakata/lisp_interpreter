@@ -7,7 +7,7 @@
 	:data input
 	:cur nil))
 
-(defparameter *input-data* (create-lex-data "(+ 3  (- 3 (+ 1 4) ) )"))
+;;(defparameter *input-data* (create-lex-data "(+ 3 (- 3 3) )"))
 
 
 (defun lex-data-length (lex-data)

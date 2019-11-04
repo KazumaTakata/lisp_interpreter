@@ -14,8 +14,7 @@
 	tokens))))
 
 
-(defparameter *tokens* (list :data (get-all-token *input-data*):pos
-			     0))
+;;(defparameter *tokens* (list :data (get-all-token *input-data*):pos			     0))
 
 (defun advance-get-token (tokens)
   (let ((pos (getf tokens :pos))
