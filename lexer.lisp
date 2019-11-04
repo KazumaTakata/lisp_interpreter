@@ -37,15 +37,31 @@
 	  (cond
 	   ((char= curChar
 		   #\()
-	    "LPAREN")
-	   ((char= curChar #\)) "RPAREN")
-	   ((char= curChar #\+) "PLUS")
-	   ((char= curChar #\-) "MINUS")
+
+	    (create-token "LPAREN" "LPAREN"))
+	   ((char= curChar #\))
+	    (create-token "RPAREN" "RPAREN"))
+	   ((char= curChar #\+)
+	    (create-token "OP" "PLUS"))
+	   ((char= curChar #\-)
+	    (create-token "OP" "MINUS"))
 	   ((alpha-char-p curChar)
-	    (get-ident lex-data))
+	    (if-keyword (get-ident lex-data)))
 	   ((digit-char-p curChar)
-	    (get-number lex-data)))
+	    (create-token "NUMBER"
+			  (get-number lex-data))))
 	nil))))
+
+(defun if-keyword (string-data)
+  (if (or (string= string-data "defun")
+	  (string= string-data "defparameter")
+	  (string= string-data "defvar"))
+      (create-token "KEYWORD" string-data)
+    (create-token "IDENT" string-data)))
+
+(defun create-token (type value)
+  (list :type type
+	:value value))
 
 (defun get-number (lex-data)
   (let ((start-pos (getf lex-data :pos)))
@@ -105,23 +121,5 @@
 
 
 
-
-(defun isNumber (ch)
-  (digit-char-p ch))
-
-(defun isAlpha (ch)
-  (alpha-char-p ch))
-
-
-(defmacro Infix (infixAri)
-  (let ((var1 (first infixAri))
-	(op (second infixAri))
-	(var2 (third infixAri)))
-    `(,op ,var1 ,var2)))
-
-(defmacro inc (var)
-  (list 'setq
-	var
-	(list '1+ var)))
 
 
