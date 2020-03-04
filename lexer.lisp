@@ -35,10 +35,8 @@
     (let ((curChar (advance-get-cur-char lex-data)))
       (if curChar
 	  (cond
-	   ((char= curChar
-		   #\()
-
-	    (create-token "LPAREN" "LPAREN"))
+	   ((char= curChar #\()
+        (create-token "LPAREN" "LPAREN"))
 	   ((char= curChar #\))
 	    (create-token "RPAREN" "RPAREN"))
 	   ((char= curChar #\+)
@@ -50,7 +48,7 @@
 	   ((digit-char-p curChar)
 	    (create-token "NUMBER"
 			  (get-number lex-data))))
-	nil))))
+	  nil))))
 
 (defun if-keyword (string-data)
   (if (or (string= string-data "defun")
@@ -72,10 +70,9 @@
 	    while
 	    (digit-char-p (get-next-char lex-data)))
       (let ((end-pos (getf lex-data :pos))
-	    (data (getf lex-data :data)))
-	(subseq data
-		start-pos
-		(+ 1 end-pos))))))
+	        (data (getf lex-data :data)))
+           (subseq data  start-pos (+ 1 end-pos))
+      ))))
 
 
 (defun get-ident (lex-data)
@@ -87,14 +84,13 @@
 	    while
 	    (alpha-char-p (get-next-char lex-data)))
       (let ((end-pos (getf lex-data :pos))
-	    (data (getf lex-data :data)))
-	(subseq data
-		start-pos
-		(+ 1 end-pos)))))) 
+	        (data (getf lex-data :data)))
+	       (subseq data start-pos (+ 1 end-pos)))
+      ))) 
 
 (defun advance-get-cur-char (lex-data)
   (progn
-    (advanceChar)
+    (advanceChar lex-data)
     (let ((pos (getf lex-data :pos)))
       (if (> (lex-data-length lex-data) pos)
 	  (let ((data (getf lex-data :data)))
@@ -117,9 +113,9 @@
 	  (char data nextPos))
       nil)))
 
-(defun advanceChar ()
-  (let ((curpos (getf *input-data* :pos)))
-    (setf (getf *input-data* :pos) (+ curpos 1))))
+(defun advanceChar (lex-data)
+  (let ((curpos (getf lex-data :pos)))
+    (setf (getf lex-data :pos) (+ curpos 1))))
 
 
 
