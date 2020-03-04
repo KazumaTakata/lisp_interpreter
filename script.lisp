@@ -4,6 +4,6 @@
 
 
 
-(defvar input (create-lex-data "(+ (- 1 3) 1)"))
+(defvar input (create-lex-data "(+ (- 1 10) 1)"))
 (defvar tree (parse_eat_lparen input))
 
